@@ -1,6 +1,7 @@
-# 網際網路是如何運作的
 
-#### [how web works / vasanthk 英文原版](https://github.com/vasanthk/how-web-works)
+#### [How Web Works / vasanthk 英文原版](https://github.com/vasanthk/how-web-works)
+
+# 網際網路是如何運作的
 
 當我們在瀏覽器輸入 google.com 後，在我們不知道的幕後發生了那些事情？
 
