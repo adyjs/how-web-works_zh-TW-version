@@ -1,9 +1,11 @@
 # 網際網路是如何運作的
 
+## [how web works / vasanthk 英文原版](https://github.com/vasanthk/how-web-works)
+
 當我們在瀏覽器輸入 google.com 後，在我們不知道的幕後發生了那些事情？
 
 **內容列表**
-- [當按下了 google 字首的 "g" 按鍵時](#當按下了google字首的g按鍵時)
+- [當按下了 google 字首的 "g" 按鍵時](當按下了google字首的g按鍵時)
 - [當你按了 "Enter" 鍵時](#當你按了enter鍵時)
 - [解析 URL](#解析url)
 - [檢視 HTTP 嚴格傳輸安全模式](#檢視http嚴格傳輸安全模式)
