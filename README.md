@@ -10,7 +10,7 @@
 - [當你按了 "Enter" 鍵時](#當你按了enter鍵時)
 - [解析 URL](#解析url)
 - [檢視 HTTP 嚴格傳輸安全模式](#檢視http嚴格傳輸安全模式)
-- [DNS lookup](#dns-lookup)
+- [DNS 查找](#DNS查找)
 - [Opening of a socket + TLS handshake](#opening-of-a-socket--tls-handshake)
 - ["HTTP" 超文本傳輸協定](#http超文本傳輸協定)
 - [對於 HTTP 伺服器的請求處理](#對於http伺服器的請求處理)
@@ -45,8 +45,7 @@
 在鍵盤的例子中：
 
 * 按鍵編號是被儲存在端點暫存器的內部記憶電路中。
-* 主機上的 USB 控制器每 10 ms 左右會與鍵盤的端點進行通訊，
-* 所以可以知道已經被儲存在端點上的按鍵編號。
+* 主機上的 USB 控制器每 10 ms 左右會與鍵盤的端點進行通訊，所以可以知道已經被儲存在端點上的按鍵編號。
 * 在 USB 2.0 的序列介面引擎上，這些數值可以最大每秒 1.5 MB 的速度來傳送
 * 這些序列訊號是在電腦主機上的 USB 控制器被解碼，被經由 HID 通用鍵盤設備的驅動程式來解釋意義
 * 最後這些數值都會被傳送到作業系統的硬體抽象層級來運用
@@ -83,30 +82,42 @@
 然而，這種單次的 HTTP 發送請求，有潛在會洩漏使用者弱點的風險而造成 [降級攻擊](http://www.yourdictionary.com/downgrade-attack)，而 HTTP 嚴格傳輸安全列表就是為了這種資安考量，而設置在現代的瀏覽器內。
 
 
-## DNS lookup
+## DNS查找
 
-The browser tries to figure out the IP address for the entered domain. The DNS lookup proceeds as follows:
+瀏覽器會試著把 IP 位址對應到曾經進入過的網域。DNS(網域域名伺服器)在進行查找的過程中，會進行以下的流程：
 
-* **Browser cache:** The browser caches DNS records for some time. Interestingly, the OS does not tell the browser the time-to-live for each DNS record, and so the browser caches them for a fixed duration (varies between browsers, 2 – 30 minutes).
-* **OS cache:** If the browser cache does not contain the desired record, the browser makes a system call (gethostbyname in Windows). The OS has its own cache.
-* **Router cache:** The request continues on to your router, which typically has its own DNS cache.
-* **ISP DNS cache:** The next place checked is the cache ISP’s DNS server. With a cache, naturally.
-* **Recursive search:** Your ISP’s DNS server begins a recursive search, from the root nameserver, through the .com top-level nameserver, to Google’s nameserver. Normally, the DNS server will have names of the .com nameservers in cache, and so a hit to the root nameserver will not be necessary.
+* **瀏覽器快取：** 瀏覽器在某些時候會儲存 DNS 的紀錄。有趣的是，作業系統並不會告訴瀏覽器，每個 DNS 中的每筆資料會存留多久，所以瀏覽器會在固定的時間間隔來儲存這些域名資料(這個間隔時間大約 2 到 30 分鐘之間)。
 
-Here is a diagram of what a recursive DNS search looks like:
+* **作業系統快取:** 如果瀏覽器所儲存的快取資料並不是我們想要的，那瀏覽器就會對系統發出一個功能請求 (在 windows 系統中是使用 gethostbyname 函式)，作業系統有自己本身的快取。
+
+* **路由器快取:** 這些域名查找的請求也會在你的路由器上執行，在大多數的情況下，路由器本身也會有類似 DNS 的快取域名的功能。
+
+* **網路服務供應商 DNS 快取:** 照常理說，在你當地的網路服務供應商都會提供伺服器來做網域域名查找的服務。
+
+* **遞迴搜尋:** 網路供應商的 DNS 進行著遞迴方式的搜尋，從根域名伺服器、.com 的第一級域名伺服器、一直找到 google 的域名伺服器。
+一般來說，DNS 會儲存 .com 的頂級域名伺服器的網址快取，所以實際上並不一定要使用到根域名伺服器。
+
+
+有關於遞迴方式的 DNS 搜尋示意圖
 
 <p align="center">
   <img src="http://igoro.com/wordpress/wp-content/uploads/2010/02/500pxAn_example_of_theoretical_DNS_recursion_svg.png" alt="Recursive DNS search"/>
 </p>
 
-One worrying thing about DNS is that the entire domain like wikipedia.org or facebook.com seems to map to a single IP address. Fortunately, there are ways of mitigating the bottleneck:
+DNS 令人擔心的一件事，就是當如果要搜尋的是一個完整的網域名，像是 wikipedia.org 或是 facebook.com 時，似乎是要把域名對應到一個 IP 位址上。但還好，現在已經有很多方式可以減輕這個瓶頸所帶來的負擔:
 
-* **Round-robin DNS** is a solution where the DNS lookup returns multiple IP addresses, rather than just one. For example, facebook.com actually maps to four IP addresses.
-* **Load-balancer** is the piece of hardware that listens on a particular IP address and forwards the requests to other servers. Major sites will typically use expensive high-performance load balancers.
-* **Geographic DNS** improves scalability by mapping a domain name to different IP addresses, depending on the client’s geographic location. This is great for hosting static content so that different servers don’t have to update shared state.
-* **Anycast** is a routing technique where a single IP address maps to multiple physical servers. Unfortunately, anycast does not fit well with TCP and is rarely used in that scenario.
+* **轉輪循環式 DNS**這是一個 DNS 用來回覆多重 IP 的解決方式。例如: facebook.com 這個域名實際上會對應到四個 IP 位址，那經由這種轉輪循環式的 DNS 的服務，就會給查找 facebook.com 的使用者輪流回覆這四個 IP。
 
-Most of the DNS servers themselves use anycast to achieve high availability and low latency of the DNS lookups. Users of an anycast service (DNS is an excellent example) will always connect to the 'closest' (from a routing protocol perspective) DNS server. This reduces latency, as well as providing a level of load-balancing (assuming that your consumers are evenly distributed around your network).
+* **負載平衡器** 這是一種硬體，可以設定當收到某些特定 IP 時，就轉發請求到其他的伺服器，流量大的網站一般來說都會使用性能很好、很昂貴的負載平衡器。
+
+* **與地理位置相關的 DNS** 依照使用者所在的地理位置，來回覆該地理位置所被設定對應被查詢網域的 IP 位址，如此可以增加各個服器的擴展性，這對於管理不同的伺服器上的一些靜態內容有好處，也不用去更新共享的狀態。
+
+
+* **任播** 這是一種路由技術，以單一 IP 位址可以任意連接到多個伺服器，但每次只會有單一目標伺服器會收到請求。較不理想的是，任播較不適合使用 TCP。
+
+
+大多數的 DNS 伺服器使用任播技術是為了在域名查找的時候，可以做到高可用性及低延遲性。
+使用任播服務(DNS 在這邊是很好的例子)的使用者會永遠連接到最近(但主要還是看個別路由的演算法而定)的 DNS 伺服器。這可以減低網路延遲，也可以平均分散每個伺服器的負載(這假定你的使用者是很平均分布在你的網路環境中)
 
 ## Opening of a socket + TLS handshake
 
