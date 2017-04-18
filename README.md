@@ -10,7 +10,7 @@
 - [當你按了 "Enter" 鍵時](#當你按了enter鍵時)
 - [解析 URL](#解析url)
 - [檢視 HTTP 嚴格傳輸安全模式](#檢視http嚴格傳輸安全模式)
-- [DNS 查詢](#DNS查詢)
+- [DNS 查詢](#dns查詢)
 - [Opening of a socket + TLS handshake](#opening-of-a-socket--tls-handshake)
 - ["HTTP" 超文本傳輸協定](#http超文本傳輸協定)
 - [對於 HTTP 伺服器的請求處理](#對於http伺服器的請求處理)
