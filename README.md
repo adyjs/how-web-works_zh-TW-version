@@ -104,7 +104,7 @@
   <img src="http://igoro.com/wordpress/wp-content/uploads/2010/02/500pxAn_example_of_theoretical_DNS_recursion_svg.png" alt="Recursive DNS search"/>
 </p>
 
-DNS 令人擔心的一件事，就是當如果要搜尋的是一個完整的網域名，像是 wikipedia.org 或是 facebook.com 時，似乎是要把域名對應到一個 IP 位址上。但還好，現在已經有很多方式可以減輕這個瓶頸所帶來的負擔:
+DNS 令人擔心的一件事，就是當如果要搜尋的是一個完整的網域名，像是 wikipedia.org 或是 facebook.com 時，似乎是要把域名對應到同一個 IP 位址上，而造成伺服器的極大負擔。但還好，現在已經有很多方式可以減輕這個瓶頸所帶來的負擔:
 
 * **轉輪循環式 DNS**這是一個 DNS 用來回覆多重 IP 的解決方式。例如: facebook.com 這個域名實際上會對應到四個 IP 位址，那經由這種轉輪循環式的 DNS 的服務，就會給查詢 facebook.com 的使用者輪流回覆這四個 IP。
 
